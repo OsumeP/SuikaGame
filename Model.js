@@ -9,8 +9,13 @@ class Fruta {
     this.nombre = this.config.nombre;
     this.imgKey = this.config.imgKey;
     this.suelta = esFisica;
+    this.fusionando = false; // true mientras espera a ser reemplazada por la fruta fusionada
+    // Frame en que la fruta pasó a ser física (soltada o nacida de una fusión).
+    // Se usa para darle un periodo de gracia antes de evaluar el Game Over.
+    this.frameNacimiento = esFisica ? frameCount : null;
+    this.framesSobreLimite = 0; // frames consecutivos por encima del borde superior de la caja
 
-    if (esFisica) { this.construirCuerpo(x, y); } 
+    if (esFisica) { this.construirCuerpo(x, y); }
     else { this.body = null; this.x = x; this.y = y; }
   }
 
@@ -25,7 +30,7 @@ class Fruta {
   }
 
   actualizarPosicion(x, y) { if (!this.suelta) { this.x = x; this.y = y; } }
-  soltar() { this.suelta = true; this.construirCuerpo(this.x, this.y); }
+  soltar() { this.suelta = true; this.frameNacimiento = frameCount; this.construirCuerpo(this.x, this.y); }
 
   dibujarGuia() {
     stroke(200, 200, 200, 120); strokeWeight(1);
@@ -76,7 +81,7 @@ class Mango extends Fruta {
   constructor(x, y, f) { super(x, y, 7, f); } 
   construirCuerpo(x, y) {
     this.body = Bodies.polygon(x, y, 24, this.radio, { restitution: 0.3, friction: 0.08, density: 0.001 });
-    Body.scale(this.body, this.config.escalaX, this.config.escalaY);
+    Body.scale(this.body, this.config.escalaX || 1, this.config.escalaY || 1);
     World.add(world, this.body);
   }
 }
@@ -85,7 +90,7 @@ class Maiz extends Fruta {
   constructor(x, y, f) { super(x, y, 8, f); } 
   construirCuerpo(x, y) {
     this.body = Bodies.polygon(x, y, 24, this.radio, { restitution: 0.2, friction: 0.1, density: 0.001 });
-    Body.scale(this.body, this.config.escalaX, this.config.escalaY);
+    Body.scale(this.body, this.config.escalaX || 1, this.config.escalaY || 1);
     World.add(world, this.body);
   }
 }
