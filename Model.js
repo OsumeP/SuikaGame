@@ -1,5 +1,5 @@
 // ========================================================
-// CLASE PADRE "FRUTA" (Asegúrate de que cierre bien con la })
+// CLASE PADRE "FRUTA" 
 // ========================================================
 class Fruta {
   constructor(x, y, index, esFisica = false) {
@@ -19,7 +19,7 @@ class Fruta {
     else { this.body = null; this.x = x; this.y = y; }
   }
 
-  // Si usas elipses para Mango y Maíz, este método creará círculos para las demás
+  // Este metodo es general siempre circulos
   construirCuerpo(x, y) {
     this.body = Bodies.circle(x, y, this.radio, {
       restitution: 0.4,
@@ -28,10 +28,12 @@ class Fruta {
     });
     World.add(world, this.body);
   }
-
+  
+  // Actualiza posicion
   actualizarPosicion(x, y) { if (!this.suelta) { this.x = x; this.y = y; } }
   soltar() { this.suelta = true; this.frameNacimiento = frameCount; this.construirCuerpo(this.x, this.y); }
 
+  // 
   dibujarGuia() {
     stroke(200, 200, 200, 120); strokeWeight(1);
     line(this.x, this.y, this.x, CAJA.y + CAJA.alto);
@@ -45,9 +47,11 @@ class Fruta {
     let sy = this.config.escalaY || 1.0;
 
     push();
+    // translate y Rotate
     translate(pos.x, pos.y);
     rotate(angulo);
     
+    // Muestra la imagen    
     if (imagenes[this.imgKey]) {
       image(imagenes[this.imgKey], 0, 0, (this.radio * 2) * sx, (this.radio * 2) * sy);
     } else {
@@ -63,7 +67,7 @@ class Fruta {
     
     pop();
   }
-} // 👈 REVISA QUE ESTA LLAVE DE CIERRE DE LA CLASE FRUTA ESTÉ PRESENTE
+} 
 
 // ========================================================
 // SUBCLASES DE CADA FRUTA (Sintaxis limpia de herencia)

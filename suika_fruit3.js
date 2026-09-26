@@ -1,3 +1,7 @@
+// ========================================================
+// DECLARACIONES
+// ========================================================
+
 const { Engine, World, Bodies, Body, Events } = Matter;
 
 let engine;
@@ -10,6 +14,8 @@ let musicaSonando = false;
 let colaFusiones = [];
 const VELOCIDAD_MAXIMA = 30;
 
+
+
 // --- Siguiente fruta ---
 // Solo aparecen como fruta del jugador los niveles [0, NIVELES_SPAWN) (Uva, Fresa, Cereza)
 const NIVELES_SPAWN = 3;
@@ -21,14 +27,19 @@ const PANEL_SIGUIENTE = { x: 50, y: 250, ancho: 130, alto: 140, tamMax: 80 };
 let juegoTerminado = false;
 let temporizadorSpawn = null; // id del setTimeout que genera la siguiente fruta
 // Una fruta recién soltada/fusionada no cuenta para perder durante este tiempo
+
 // (la fruta se suelta desde y = CAJA.y - 30, es decir, POR ENCIMA de la línea).
 const FRAMES_GRACIA_NACIMIENTO = 60; // ~1 s a 60 fps
+
 // Frames consecutivos que una fruta debe permanecer sobre la línea para perder
 const FRAMES_LIMITE_GAME_OVER = 120; // ~2 s a 60 fps
 const BOTON_REINICIAR_FIN = { ancho: 180, alto: 50 }; // centrado en la caja (ver dibujarGameOver)
 
-// 1. DECLARAR EL OBJETO DONDE SE GUARDARÁN LAS IMÁGENES
+// donde se guardan las imagenes
 let imagenes = {};
+let music = {};
+
+const CAJA = { x: 250, y: 180, ancho: 400, alto: 350, grosor: 20 };
 
 const CONFIG_FRUTAS = [
   { nombre: "Uva", radio: 15, puntos: 1, imgKey: "uva" },
@@ -46,22 +57,32 @@ const CONFIG_FRUTAS = [
   { nombre: "Sandía", radio: 110, puntos: 66, imgKey: "sandia" }
 ];
 
-const CAJA = { x: 250, y: 80, ancho: 400, alto: 500, grosor: 20 };
 
-// 2. FUNCIÓN PRELOAD: CARGA TUS IMÁGENES AQUÍ ANTES DE SETUP
+// ========================================================
+// FUNCIONES PRINCIPALES
+// ========================================================
+
+
 function preload() {
-  // Reemplaza estas URLs de ejemplo por los nombres de tus archivos subidos a p5.js (ej: 'assets/uva.png')
-  imagenes.uva = loadImage('img/uva.png');
-  imagenes.fresa = loadImage('img/fresa.png');
-  imagenes.cereza = loadImage('img/cereza.png');
-  imagenes.limon = loadImage('img/limon.png');
-  imagenes.tomate = loadImage('img/tomate.png');
-  imagenes.manzana = loadImage('img/maracuya.png');
-  imagenes.aguacate = loadImage('img/aguacate.png');
-  imagenes.mango = loadImage('img/mango.png');
-  imagenes.maiz = loadImage('img/maiz.png');
-  imagenes.pina = loadImage('img/pina.png');
-  imagenes.sandia = loadImage('img/sandia.png');
+  imagenes = {
+      uva: loadImage('Resources/img/uva.png'),
+      fresa: loadImage('Resources/img/fresa.png'),
+      cereza: loadImage('Resources/img/cereza.png'),
+      limon: loadImage('Resources/img/limon.png'),
+      tomate: loadImage('Resources/img/tomate.png'),
+      manzana: loadImage('Resources/img/maracuya.png'), // *****es una manzana 
+      aguacate: loadImage('Resources/img/aguacate.png'),
+      mango: loadImage('Resources/img/mango.png'),
+      maiz: loadImage('Resources/img/maiz.png'),
+      pina: loadImage('Resources/img/pina.png'),
+      sandia: loadImage('Resources/img/sandia.png'),
+     background: loadImage('Resources/img/background.png')
+  }
+
+    music = {
+      song: loadSound("Resources/sound/suika-game-song.mp3")
+      //merge: loadSound("Resources/sound/Merge.mp3"),
+    };     
 }
 
 function setup() {
@@ -74,8 +95,8 @@ function setup() {
   // Más iteraciones = menos solape residual cuando hay muchas frutas apiladas
   engine.positionIterations = 10;
   engine.velocityIterations = 8;
-
-  let suelo = Bodies.rectangle(CAJA.x + CAJA.ancho / 2, CAJA.y + CAJA.alto, CAJA.ancho, CAJA.grosor, { isStatic: true, restitution: 0.2 });
+   // dibuja la caja
+   let suelo = Bodies.rectangle(CAJA.x + CAJA.ancho / 2, CAJA.y + CAJA.alto, CAJA.ancho, CAJA.grosor, { isStatic: true, restitution: 0.2 });
   let paredIzquierda = Bodies.rectangle(CAJA.x, CAJA.y + CAJA.alto / 2, CAJA.grosor, CAJA.alto, { isStatic: true, restitution: 0.2 });
   let paredDerecha = Bodies.rectangle(CAJA.x + CAJA.ancho, CAJA.y + CAJA.alto / 2, CAJA.grosor, CAJA.alto, { isStatic: true, restitution: 0.2 });
   
@@ -87,6 +108,8 @@ function setup() {
 
 function draw() {
   background(245, 245, 245);
+  image(imagenes["background"], width / 2, height / 2, width, height);   
+  
   // dt fijo: evita saltos de física grandes si el navegador tiene un frame lento
   // Con el juego terminado la física queda congelada
   if (!juegoTerminado) {
@@ -100,10 +123,30 @@ function draw() {
   dibujarInterfaz();
 
   // Caja transparente contenedor
-  fill(255, 255, 255, 120);
-  stroke(180);
-  strokeWeight(2);
-  rect(CAJA.x + CAJA.grosor / 2, CAJA.y, CAJA.ancho - CAJA.grosor, CAJA.alto);
+  stroke(230, 185, 110);    // Color dorado/arena para los bordes
+  strokeWeight(10);          // El grosor que ya tienes configurado
+  strokeJoin(ROUND);        // Esquinas suavizadas
+  
+  // 1. CARA TRASERA (El fondo del contenedor)
+  // Desplazamos esta cara hacia arriba y atrás para dar el efecto 3D
+  let desvX = 50; // Qué tan movida a la derecha está la perspectiva
+  let desvY = 30; // Qué tan alta es la boca de la caja (profundidad)
+  
+    // 2. LÍNEAS DE CONEXIÓN (Profundidad de las esquinas)
+  // Conectamos las 4 esquinas de la cara trasera con la delantera
+  line(CAJA.x + CAJA.grosor / 2, CAJA.y, CAJA.x + desvX, CAJA.y - desvY); // Esquina Superior Izquierda
+  line(CAJA.x + desvX, CAJA.y - desvY, 590, CAJA.y - desvY); // Esquina Superior Izquierda  
+  line(590, CAJA.y - desvY, CAJA.x + CAJA.ancho- CAJA.grosor/2, CAJA.y); // Esquina Superior Derecha
+
+  
+  fill(255, 255, 255, 100); // El color blanco transparente que ya tenías
+  rect(CAJA.x + CAJA.grosor / 2, CAJA.y, CAJA.ancho - CAJA.grosor, CAJA.alto);  
+  strokeWeight(); 
+  fill(215, 180, 130, 50); // Fondo interior ligeramente más oscuro/cálido
+  rect(CAJA.x + desvX, CAJA.y - desvY, 289, CAJA.alto- desvY);
+
+  
+  
   dibujarLineaLimite();
 
   if (!juegoTerminado && frutaActual && !frutaActual.suelta) {
@@ -120,7 +163,6 @@ function draw() {
   if (juegoTerminado) dibujarGameOver();
 }
 
-// [Las funciones mouseReleased, spawnFrutaInicial, instanciarFruta, manejarColisiones, dibujarInterfaz se mantienen igual que tu código base anterior]
 function mouseReleased() {
   if (mouseX > 50 && mouseX < 180) {
     if (mouseY > 120 && mouseY < 160) { musicaSonando = !musicaSonando; return; }
@@ -144,7 +186,13 @@ function mouseReleased() {
       }, 500);
     }
   }
+  musicaSonando ? false : true
 }
+
+// ========================================================
+// FUNCIONES
+// ========================================================
+
 
 function elegirIndiceSpawn() {
   return floor(random(0, NIVELES_SPAWN));
@@ -246,10 +294,26 @@ function limitarVelocidad() {
 }
 
 function dibujarInterfaz() {
+  // PARTE IZQUIERDA DE LA INTERFAZ
+  
+  //-- TEXTO
   fill(40); noStroke(); textSize(24); textAlign(LEFT, TOP);
   text("FRUIT MERGE", 50, 40);
+  //-- Score  
   textSize(18); text("Score: " + puntaje, 50, 80);
+  
+  //-- Boton musica  
   fill(musicaSonando ? "#A3E4D7" : "#FADBD8"); rect(50, 120, 130, 40, 4);
+  
+  //----- activa la musica
+  if (music.song) {
+    if (musicaSonando && !music.song.isPlaying()) {
+      music.song.loop();
+    } else if (!musicaSonando && music.song.isPlaying()) {
+      music.song.stop();
+    }
+  }
+  //---boton reiniciar
   fill(0); textAlign(CENTER, CENTER); text(musicaSonando ? "🎵 ON" : "🔇 OFF", 115, 140);
   fill("#D6EAF8"); rect(50, 180, 130, 40, 4); fill(0); text("🔄 Reiniciar", 115, 200);
   dibujarSiguiente();
@@ -286,16 +350,24 @@ function dibujarSiguiente() {
   pop();
 }
 
+// ----------Dibuja la fila de evolucion de las frutas.
+
 function dibujarFilaEvolucion() {
-  fill(60); noStroke(); textAlign(LEFT, CENTER); textSize(14); text("Evolución:", 40, 610);
-  let startX = 130; let gap = 65;
+  fill(227,227,149); //para el rectangulo
+  stroke(255);
+  rect(30,580, width-95, 53);
+  noStroke();
+  fill(0); textFont("georgia");textAlign(LEFT, CENTER); textSize(16); text("Evolución:", 37, 605);
+  let startX = 150; let gap = 65;
   for (let i = 0; i < CONFIG_FRUTAS.length; i++) {
-    let c = CONFIG_FRUTAS[i]; let px = startX + (i * gap); let py = 610;
+    let c = CONFIG_FRUTAS[i]; let px = startX + (i * gap); let py = 600;
     // Dibujar la imagen miniatura en la barra inferior
     if(imagenes[c.imgKey]) {
       image(imagenes[c.imgKey], px, py, 30, 30);
     }
-    fill(100); noStroke(); textSize(9); textAlign(CENTER, CENTER); text(c.nombre, px, py + 25);
+    fill(0,125,0); noStroke(); textSize(10); textAlign(CENTER, CENTER); 
+    text("(" + c.puntos + ") " + c.nombre, px, py + 25);
+
   }
 }
 
