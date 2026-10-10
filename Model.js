@@ -84,7 +84,7 @@ class Cereza extends Fruta {
   
   drawImage(){
     if (imagenes[this.imgKey]) {
-      image(imagenes[this.imgKey], 0, 0, this.radio * 2, this.radio * 2.3);
+      image(imagenes[this.imgKey], 0, -8, this.radio * 2, this.radio * 2.7);
     } else {
       fill(200); 
       ellipse(0, 0, this.radio * 2, this.radio * 2);
