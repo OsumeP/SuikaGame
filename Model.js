@@ -48,12 +48,7 @@ class Fruta {
     rotate(angulo);
     
     // Muestra la imagen (se renderiza dentro del diámetro circular: radio * 2)
-    if (imagenes[this.imgKey]) {
-      image(imagenes[this.imgKey], 0, 0, this.radio * 2, this.radio * 2);
-    } else {
-      fill(200); 
-      ellipse(0, 0, this.radio * 2, this.radio * 2);
-    }
+    this.drawImage();
 
     // Contorno de depuración (Debug verde circular)
     noFill(); 
@@ -68,6 +63,15 @@ class Fruta {
     
     pop();
   }
+  
+  drawImage(){
+    if (imagenes[this.imgKey]) {
+      image(imagenes[this.imgKey], 0, 0, this.radio * 2, this.radio * 2);
+    } else {
+      fill(200); 
+      ellipse(0, 0, this.radio * 2, this.radio * 2);
+    }
+  }
 } 
 
 // ========================================================
@@ -75,7 +79,18 @@ class Fruta {
 // ========================================================
 class Uva extends Fruta { constructor(x, y, f) { super(x, y, 0, f); } }
 class Fresa extends Fruta { constructor(x, y, f) { super(x, y, 1, f); } }
-class Cereza extends Fruta { constructor(x, y, f) { super(x, y, 2, f); } }
+class Cereza extends Fruta { 
+  constructor(x, y, f) { super(x, y, 2, f); } 
+  
+  drawImage(){
+    if (imagenes[this.imgKey]) {
+      image(imagenes[this.imgKey], 0, 0, this.radio * 2, this.radio * 2.3);
+    } else {
+      fill(200); 
+      ellipse(0, 0, this.radio * 2, this.radio * 2);
+    }
+  }
+}
 class Limon extends Fruta { constructor(x, y, f) { super(x, y, 3, f); } }
 class Tomate extends Fruta { constructor(x, y, f) { super(x, y, 4, f); } }
 class Manzana extends Fruta { constructor(x, y, f) { super(x, y, 5, f); } }
