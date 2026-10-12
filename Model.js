@@ -50,7 +50,7 @@ class Fruta {
     // Muestra la imagen (se renderiza dentro del diámetro circular: radio * 2)
     this.drawImage();
 
-    // Contorno de depuración (Debug verde circular)
+    // Contorno verde circular)
     noFill(); 
     stroke("#00FF00"); 
     strokeWeight(2);
@@ -73,6 +73,7 @@ class Fruta {
     }
   }
 } 
+
 
 // ========================================================
 // SUBCLASES DE CADA FRUTA
