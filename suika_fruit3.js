@@ -80,7 +80,8 @@ function preload() {
   }
 
   musica = {
-    song: loadSound("Resources/sound/suika-game-song.mp3")
+    song: loadSound("Resources/sound/suika-game-song.mp3"),
+    fuse: loadSound("Resources/sound/fuse.wav"),
     //merge: loadSound("Resources/sound/Merge.mp3"),
   };     
 }
@@ -236,6 +237,9 @@ function procesarFusiones() {
 
     let nuevaFruta = instanciarFruta(fusion.nuevoIndex, xClamp, yClamp, true);
     frutas.push(nuevaFruta);
+    if (musica.fuse && musicaSonando){
+      musica.fuse.play();
+    }
   }
 
   colaFusiones = [];
