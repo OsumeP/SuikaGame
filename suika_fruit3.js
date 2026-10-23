@@ -1,7 +1,3 @@
-// ========================================================
-// DECLARACIONES
-// ========================================================
-
 const { Engine, World, Bodies, Body, Events } = Matter;
 
 let engine;
@@ -18,14 +14,11 @@ const VELOCIDAD_MAXIMA = 30;
 let imagenes = {};
 let musica = {};
 
-
-// --- Siguiente fruta ---
-
 const NIVELES_SPAWN = 3; // solo aparece 3 frutas (Uva, Fresa, Cereza)
 let indiceSiguiente = 0; // indice que se lanzará DESPUÉS de frutaActual
-const PANEL_SIGUIENTE = { x: 50, y: 250, ancho: 130, alto: 140, tamMax: 80 };  // configuracion de cuadrado donde aparecera siguiente 
+const PANEL_SIGUIENTE = { x: 50, y: 250, ancho: 130, alto: 140, tamMax: 80 }; 
 
-// --- Game Over ---
+// Game Over
 let juegoTerminado = false;
 let temporizadorSpawn = null; // id del setTimeout que genera la siguiente fruta
 const FRAMES_GRACIA_NACIMIENTO = 60; // Linea que dice el tope de llenado a 60 fps
@@ -34,12 +27,12 @@ const FRAMES_GRACIA_NACIMIENTO = 60; // Linea que dice el tope de llenado a 60 f
 const FRAMES_LIMITE_GAME_OVER = 120; // ~2 s a 60 fps
 const BOTON_REINICIAR_FIN = { ancho: 180, alto: 50 }; // centrado en la caja (ver dibujarGameOver)
 
-//  --- Tamaño Caja o recipiente ---
+//  Tamaño Caja o recipiente
 const CAJA = { x: 250, y: 180, ancho: 400, alto: 350, grosor: 20 };
 
-// --- CONFIGURACION DE LAS FRUTAS.---
+// CONFIGURACION DE LAS FRUTAS.
 // El índice de cada entrada DEBE coincidir con el de su subclase en Model.js
-//y con instanciarFruta(): 6 = Aguacate, 7 = Mango.
+//y con instanciarFruta().
 
 const CONFIG_FRUTAS = [
   { nombre: "Uva", radio: 15, puntos: 1, imgKey: "uva" },  //idx 0
@@ -55,15 +48,9 @@ const CONFIG_FRUTAS = [
   { nombre: "Sandía", radio: 110, puntos: 66, imgKey: "sandia" }//idx 10
 ];
 
-
-// ========================================================
-// FUNCIONES PRINCIPALES
-// ========================================================
-
-
 function preload() {
   imagenes = {
-    // --- frutas ---
+    // frutas
     uva: loadImage('Resources/img/uva.png'),
     fresa: loadImage('Resources/img/fresa.png'),
     cereza: loadImage('Resources/img/cereza.png'),
@@ -75,25 +62,24 @@ function preload() {
     maiz: loadImage('Resources/img/maiz.png'),
     pina: loadImage('Resources/img/pina.png'),
     sandia: loadImage('Resources/img/sandia.png'),
-    //--- background ---
+    //background
     background_juego: loadImage('Resources/img/background.png')
   }
 
   musica = {
     song: loadSound("Resources/sound/suika-game-song.mp3"),
     fuse: loadSound("Resources/sound/fuse.wav"),
-    //merge: loadSound("Resources/sound/Merge.mp3"),
+    drop: loadSound("Resources/sound/pop.mp3"),
   };     
 }
 
 function setup() {
   createCanvas(900, 650);
-  imageMode(CENTER); // ¡MUY IMPORTANTE! Centra las imágenes en el origen
+  imageMode(CENTER);
   
   engine = Engine.create();
   world = engine.world;
   world.gravity.y = 1;
-  // Más iteraciones = menos solape residual cuando hay muchas frutas apiladas
   engine.positionIterations = 10;
   engine.velocityIterations = 8;
   
@@ -112,7 +98,7 @@ function draw() {
   
   background(245, 245, 245);
   
-  // --- Coloca el background_juego
+  // Coloca el background
   image(imagenes["background_juego"], width / 2, height / 2, width, height);   
   dibujarFondoCaja();
   
@@ -148,7 +134,7 @@ function draw() {
 
 
 function mouseReleased() {
-  // 1. Botones del menú lateral izquierdo
+  // Botones del menú lateral izquierdo
   if (mouseX > 50 && mouseX < 180) {
     if (mouseY > 120 && mouseY < 160) { musicaSonando = !musicaSonando; return; }
     if (mouseY > 180 && mouseY < 220) { reiniciarJuego(); return; }
@@ -159,14 +145,16 @@ function mouseReleased() {
     return;
   }
 
-  // 2. Soltar fruta en la caja
+  // Soltar fruta en la caja
   if (frutaActual && !frutaActual.suelta && canSpawn) {
     if (mouseX > CAJA.x && mouseX < CAJA.x + CAJA.ancho) {
-      let frutaParaSoltar = frutaActual; // Guardamos una referencia segura
+      let frutaParaSoltar = frutaActual;
       frutaParaSoltar.soltar();
       frutas.push(frutaParaSoltar);
-      
-      frutaActual = null; // Ahora sí podemos vaciarla de forma segura
+      if (musica.drop && musicaSonando) {
+        musica.drop.play();
+      }
+      frutaActual = null;
       canSpawn = false;
       
       temporizadorSpawn = setTimeout(() => {
@@ -178,20 +166,16 @@ function mouseReleased() {
   }
 }
 
-//--- Funcion que va en el  Events.on(engine, 'collisionStart', manejarColisiones);
+//Funcion que va en el  Events.on(engine, 'collisionStart', manejarColisiones);
 
 function manejarColisiones(event) {
-  // Solo detecta y ENCOLA fusiones aquí. No se toca el mundo de Matter
-  // en medio del paso de física: eso es lo que causaba que las frutas
-  // nuevas nacieran solapadas y salieran "disparadas" de la caja.
   let parejas = event.pairs;
   for (let i = 0; i < parejas.length; i++) {
     let bodyA = parejas[i].bodyA; let bodyB = parejas[i].bodyB;
     let fA = frutas.find(f => f.body === bodyA); let fB = frutas.find(f => f.body === bodyB);
 
     if (!fA || !fB || fA === fB || fA.index !== fB.index) continue;
-    // Evita procesar dos veces la misma fruta si varios pares válidos
-    // aparecen en el mismo frame (p. ej. 3 frutas iguales tocándose a la vez)
+
     if (fA.fusionando || fB.fusionando) continue;
 
     let nuevoIndex = fA.index + 1;
@@ -209,9 +193,8 @@ function manejarColisiones(event) {
     });
   }
 }
-// ========================================================
-// FUSIONES
-// ========================================================
+
+// Fusiones
 
 function procesarFusiones() {
   if (colaFusiones.length === 0) return;
@@ -222,10 +205,6 @@ function procesarFusiones() {
 
     puntaje += CONFIG_FRUTAS[fusion.nuevoIndex].puntos;
 
-    // La fruta resultante puede ser más grande que las dos originales:
-    // se limita su punto de aparición para que no nazca encajada dentro
-    // de una pared de la caja.
-    // Para frutas ovaladas (Mango, Maíz) se usa su semieje real en cada eje.
     let cfgNueva = CONFIG_FRUTAS[fusion.nuevoIndex];
     let radioX = cfgNueva.radio * (cfgNueva.escalaX || 1);
     let radioY = cfgNueva.radio * (cfgNueva.escalaY || 1);
@@ -242,9 +221,7 @@ function procesarFusiones() {
   colaFusiones = [];
 }
 
-// ========================================================
 // Controla no atraviese paredes /suelo por la velocidad
-// ========================================================
 
 function limitarVelocidad() {
   for (let f of frutas) {

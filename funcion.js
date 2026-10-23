@@ -1,14 +1,8 @@
-// ========================================================
-// FUNCIONES
-// ========================================================
-
-
-//--Interfaz
+//Interfaz
 function dibujarInterfaz() {
 
 
-  // --- PARTE IZQUIERDA DE LA INTERFAZ ---
-  //-- texto
+  //PARTE IZQUIERDA
   fill(40); 
   noStroke(); 
   textSize(24); 
@@ -16,13 +10,13 @@ function dibujarInterfaz() {
   text("FRUIT MERGE", 50, 40);
   
   
-  //-- Score  
+  //Score  
   textSize(18); text("Score: " + puntaje, 50, 80);
   
-  //-- Boton musica  
+  //Boton musica  
   fill(musicaSonando ? "#A3E4D7" : "#FADBD8"); rect(50, 120, 130, 40, 4);
   
-  //----- activa la musica
+  //activa la musica
   if (musica.song) {
     if (musicaSonando && !musica.song.isPlaying()) {
       musica.song.loop();
@@ -31,17 +25,17 @@ function dibujarInterfaz() {
     }
   }
   
-  //---boton reiniciar
+  //boton reiniciar
   fill(0); textAlign(CENTER, CENTER); text(musicaSonando ? "🎵 ON" : "🔇 OFF", 115, 140);
   fill("#D6EAF8"); rect(50, 180, 130, 40, 4); fill(0); text("🔄 Reiniciar", 115, 200);
   
-  //--- caja de siguiente  
+  //caja de siguiente  
   dibujarSiguiente();
   
-  // --- dibuja la caja del juego
+  // dibuja la caja del juego
   dibujarCaja();
   
-  // --- dibuja la linea limite.  
+  // dibuja la linea limite.  
   dibujarLineaLimite();
   
   // dibuja la fila de evolucion
@@ -49,9 +43,6 @@ function dibujarInterfaz() {
 }
 
 function dibujarSiguiente() {
-// Vista previa (solo visual, sin cuerpo físico) de la próxima fruta.
-// Durante el Game Over queda atenuada bajo la capa oscura, como el resto de la UI.
-  
   let p = PANEL_SIGUIENTE;
   let c = CONFIG_FRUTAS[indiceSiguiente];
   push();
@@ -61,8 +52,6 @@ function dibujarSiguiente() {
   noStroke(); fill(40); textSize(16); textAlign(CENTER, TOP);
   text("Siguiente:", p.x + p.ancho / 2, p.y + 8);
 
-  // Tamaño real de la fruta (así se aprecia la diferencia entre niveles),
-  // reducido proporcionalmente si no cabe en la caja de vista previa.
   let w = c.radio * 2 * (c.escalaX || 1);
   let h = c.radio * 2 * (c.escalaY || 1);
   let factor = min(1, p.tamMax / max(w, h));
@@ -81,12 +70,11 @@ function dibujarSiguiente() {
 }
 
 function dibujarCaja(){
-  // Configura 
-  stroke(230, 185, 110);    // Color dorado/arena para los bordes
-  strokeWeight(10);         // El grosor 
+  stroke(230, 185, 110);    // bordes
+  strokeWeight(10);         // grosor 
   strokeJoin(ROUND);        // Esquinas suavizadas
-  let desvX = 50;           // Qué tan movida a la derecha está la perspectiva
-  let desvY = 30;           // Qué tan alta es la boca de la caja (profundidad)
+  let desvX = 50;           
+  let desvY = 30;           
   
   //  Caja. 
   fill(255, 255, 255, 15); 
@@ -96,9 +84,9 @@ function dibujarCaja(){
 
 function dibujarFondoCaja() {
   push();  
-  stroke(230, 185, 110);    // Color dorado/arena para los bordes
-  strokeWeight(10);         // El grosor 
-  strokeJoin(ROUND);        // Esquinas suavizadas
+  stroke(230, 185, 110);    
+  strokeWeight(10);         
+  strokeJoin(ROUND);        
   let desvX = 50; 
   let desvY = 30;
   line(CAJA.x + desvX, CAJA.y - desvY, 590, CAJA.y - desvY); // fondo  
@@ -110,7 +98,7 @@ function dibujarFondoCaja() {
   pop();
 }
 function dibujarFilaEvolucion() {
-  fill(227,227,149); //para el rectangulo
+  fill(227,227,149);
   stroke(255);
   strokeWeight(1);     
   rect(30,580, width-95, 53);
@@ -128,16 +116,12 @@ function dibujarFilaEvolucion() {
   }
 
 }
-// ========================================================
 // elegir siguiente fruta
-// ========================================================
 
 function elegirIndiceSpawn() {
   return floor(random(0, NIVELES_SPAWN));
 }
 
-// La nueva fruta del jugador es la que se mostraba como "Siguiente";
-// después se sortea la próxima.
 function spawnFrutaInicial() {
   frutaActual = instanciarFruta(indiceSiguiente, mouseX, CAJA.y - 30, false);
   indiceSiguiente = elegirIndiceSpawn();
@@ -160,16 +144,12 @@ function instanciarFruta(idx, x, y, esFisica) {
   }
 }
 
-
-
-// ========================================================
 // GAME OVER
-// ========================================================
 
 // Pierde el jugador si alguna fruta YA SOLTADA permanece con su borde superior
 // por encima del borde superior de la caja durante FRAMES_LIMITE_GAME_OVER
 // frames seguidos. Las frutas recién nacidas (soltadas o fusionadas) tienen
-// un periodo de gracia, porque la fruta se suelta desde encima de la línea.
+// un periodo de gracia.
 function verificarGameOver() {
   for (let f of frutas) {
     if (!f.body || f.fusionando) continue;
@@ -179,7 +159,6 @@ function verificarGameOver() {
       continue;
     }
 
-    // bounds.min.y ya contempla la forma real (incluye óvalos de Mango/Maíz y la rotación)
     if (f.body.bounds.min.y < CAJA.y) {
       f.framesSobreLimite++;
       if (f.framesSobreLimite >= FRAMES_LIMITE_GAME_OVER) {
@@ -219,7 +198,6 @@ function dentroDeBotonReiniciarFin(mx, my) {
 
 function dibujarGameOver() {
   push();
-  // Capa semitransparente sobre todo el lienzo
   noStroke(); fill(0, 0, 0, 150);
   rect(0, 0, width, height);
 
@@ -234,7 +212,7 @@ function dibujarGameOver() {
   fill("#C0392B"); textSize(40); text("¡Perdiste!", cx, cy - 70);
   fill(40); textSize(20); text("Puntaje final: " + puntaje, cx, cy - 20);
 
-  // Botón Reiniciar (resalta al pasar el mouse)
+  // Botón Reiniciar
   let b = rectBotonReiniciarFin();
   rectMode(CORNER);
   fill(dentroDeBotonReiniciarFin(mouseX, mouseY) ? "#AED6F1" : "#D6EAF8");
@@ -245,7 +223,7 @@ function dibujarGameOver() {
   pop();
 }
 
-// Reinicio único, usado por el botón lateral y por el del panel de derrota
+// Reinicio
 function reiniciarJuego() {
   if (temporizadorSpawn !== null) { clearTimeout(temporizadorSpawn); temporizadorSpawn = null; }
   for (let f of frutas) if (f.body) World.remove(world, f.body);
