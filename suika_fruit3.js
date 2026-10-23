@@ -82,6 +82,7 @@ function preload() {
   musica = {
     song: loadSound("Resources/sound/suika-game-song.mp3"),
     fuse: loadSound("Resources/sound/fuse.wav"),
+    drop: loadSound("Resources/sound/pop.mp3"),
     //merge: loadSound("Resources/sound/Merge.mp3"),
   };     
 }
@@ -165,7 +166,9 @@ function mouseReleased() {
       let frutaParaSoltar = frutaActual; // Guardamos una referencia segura
       frutaParaSoltar.soltar();
       frutas.push(frutaParaSoltar);
-      
+      if (musica.drop && musicaSonando) {
+        musica.drop.play();
+      }
       frutaActual = null; // Ahora sí podemos vaciarla de forma segura
       canSpawn = false;
       
