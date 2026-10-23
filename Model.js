@@ -1,6 +1,4 @@
-// ========================================================
 // CLASE PADRE "FRUTA" 
-// ========================================================
 class Fruta {
   constructor(x, y, index, esFisica = false) {
     this.index = index;
@@ -11,7 +9,7 @@ class Fruta {
     this.suelta = esFisica;
     this.fusionando = false; // true mientras espera a ser reemplazada por la fruta fusionada
     
-    // Frame en que la fruta pasó a ser física (soltada o nacida de una fusión).
+    // Frame en que la fruta pasó a ser física.
     this.frameNacimiento = esFisica ? frameCount : null;
     this.framesSobreLimite = 0; // frames consecutivos por encima del borde superior de la caja
 
@@ -19,7 +17,6 @@ class Fruta {
     else { this.body = null; this.x = x; this.y = y; }
   }
 
-  // Método general: Siempre genera cuerpos circulares en Matter.js
   construirCuerpo(x, y) {
     this.body = Bodies.circle(x, y, this.radio, {
       restitution: 0.4,
@@ -47,19 +44,7 @@ class Fruta {
     translate(pos.x, pos.y);
     rotate(angulo);
     
-    // Muestra la imagen (se renderiza dentro del diámetro circular: radio * 2)
     this.drawImage();
-
-    // Contorno verde circular)
-    noFill(); 
-    stroke("#00FF00"); 
-    strokeWeight(2);
-    ellipse(0, 0, this.radio * 2, this.radio * 2);
-    
-    // Cruz central de pivote
-    stroke("#FF0000"); 
-    line(-5, 0, 5, 0); 
-    line(0, -5, 0, 5);
     
     pop();
   }
@@ -75,9 +60,7 @@ class Fruta {
 } 
 
 
-// ========================================================
-// SUBCLASES DE CADA FRUTA
-// ========================================================
+// SUBCLASES DE FRUTAS
 class Uva extends Fruta { constructor(x, y, f) { super(x, y, 0, f); } }
 class Fresa extends Fruta { constructor(x, y, f) { super(x, y, 1, f); } }
 class Cereza extends Fruta { 
