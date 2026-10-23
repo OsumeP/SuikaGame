@@ -69,7 +69,7 @@ function preload() {
     cereza: loadImage('Resources/img/cereza.png'),
     limon: loadImage('Resources/img/limon.png'),
     tomate: loadImage('Resources/img/tomate.png'),
-    manzana: loadImage('Resources/img/maracuya.png'), // *****es una manzana 
+    manzana: loadImage('Resources/img/manzana.png'),
     aguacate: loadImage('Resources/img/aguacate.png'),
     mango: loadImage('Resources/img/mango.png'),
     maiz: loadImage('Resources/img/maiz.png'),
