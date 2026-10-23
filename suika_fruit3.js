@@ -46,7 +46,7 @@ const CONFIG_FRUTAS = [
   { nombre: "Fresa", radio: 20, puntos: 3, imgKey: "fresa" }, //idx 1
   { nombre: "Cereza", radio: 25, puntos: 6, imgKey: "cereza" },//idx 2
   { nombre: "Limón", radio: 32, puntos: 10, imgKey: "limon" },  //idx 3
-  { nombre: "Tomate", radio: 40, puntos: 15, imgKey: "tomate" }, //idx 4
+  { nombre: "Durazno", radio: 40, puntos: 15, imgKey: "tomate" }, //idx 4
   { nombre: "Manzana", radio: 48, puntos: 21, imgKey: "manzana" },//idx 5
   { nombre: "Aguacate", radio: 58, puntos: 28, imgKey: "aguacate" },//idx 6
   { nombre: "Mango", radio: 70, puntos: 36, imgKey: "mango"},//idx 7
@@ -162,8 +162,6 @@ function mouseReleased() {
   // 2. Soltar fruta en la caja
   if (frutaActual && !frutaActual.suelta && canSpawn) {
     if (mouseX > CAJA.x && mouseX < CAJA.x + CAJA.ancho) {
-      console.log("Filtros pasados. Soltando fruta...");
-      
       let frutaParaSoltar = frutaActual; // Guardamos una referencia segura
       frutaParaSoltar.soltar();
       frutas.push(frutaParaSoltar);
@@ -175,7 +173,6 @@ function mouseReleased() {
         temporizadorSpawn = null;
         spawnFrutaInicial();
         canSpawn = true;
-        console.log("Nueva fruta lista en el spawn.");
       }, 500);
     }
   }
