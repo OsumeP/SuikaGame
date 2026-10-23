@@ -14,11 +14,29 @@
   <!-- OK, YOU CAN MAKE CHANGES BELOW THIS LINE AGAIN -->
 
   <style>
+    /* Centra el lienzo y aplica el degradado exacto de verde a morado */
     body {
-      padding: 0;
       margin: 0;
+      padding: 0;
+      
+      /* DEGRADADO NUEVO: Tonos extraídos directamente de tu imagen verde-morada */
+      background: linear-gradient(180deg, #51af33 0%, #3e1b5d 100%);
+      
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+    }
+
+    /* Le da un acabado estético con bordes suaves y sombra al lienzo del juego */
+    canvas {
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+      border-radius: 6px;
     }
   </style>
+
 </head>
 
 <body>
