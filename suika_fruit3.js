@@ -42,10 +42,10 @@ const CONFIG_FRUTAS = [
   { nombre: "Durazno", radio: 40, puntos: 15, imgKey: "tomate" }, //idx 4
   { nombre: "Manzana", radio: 48, puntos: 21, imgKey: "manzana" },//idx 5
   { nombre: "Aguacate", radio: 58, puntos: 28, imgKey: "aguacate" },//idx 6
-  { nombre: "Mango", radio: 70, puntos: 36, imgKey: "mango"},//idx 7
-  { nombre: "Maíz", radio: 82, puntos: 45, imgKey: "maiz"},//idx 8
-  { nombre: "Piña", radio: 95, puntos: 55, imgKey: "pina" },//idx 9
-  { nombre: "Sandía", radio: 110, puntos: 66, imgKey: "sandia" }//idx 10
+  { nombre: "Mango", radio: 65, puntos: 36, imgKey: "mango"},//idx 7
+  { nombre: "Maíz", radio: 78, puntos: 45, imgKey: "maiz"},//idx 8
+  { nombre: "Piña", radio: 88, puntos: 55, imgKey: "pina" },//idx 9
+  { nombre: "Sandía", radio: 100, puntos: 66, imgKey: "sandia" }//idx 10
 ];
 
 function preload() {
