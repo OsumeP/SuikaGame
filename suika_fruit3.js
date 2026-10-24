@@ -28,7 +28,7 @@ const FRAMES_LIMITE_GAME_OVER = 120; // ~2 s a 60 fps
 const BOTON_REINICIAR_FIN = { ancho: 180, alto: 50 }; // centrado en la caja (ver dibujarGameOver)
 
 //  Tamaño Caja o recipiente
-const CAJA = { x: 250, y: 180, ancho: 400, alto: 350, grosor: 20 };
+const CAJA = { x: 250, y: 180, ancho: 500, alto: 350, grosor: 20 };
 
 // CONFIGURACION DE LAS FRUTAS.
 // El índice de cada entrada DEBE coincidir con el de su subclase en Model.js
@@ -39,13 +39,13 @@ const CONFIG_FRUTAS = [
   { nombre: "Fresa", radio: 20, puntos: 3, imgKey: "fresa" }, //idx 1
   { nombre: "Cereza", radio: 25, puntos: 6, imgKey: "cereza" },//idx 2
   { nombre: "Limón", radio: 32, puntos: 10, imgKey: "limon" },  //idx 3
-  { nombre: "Durazno", radio: 40, puntos: 15, imgKey: "tomate" }, //idx 4
+  { nombre: "Durazno", radio: 40, puntos: 15, imgKey: "durazno" }, //idx 4
   { nombre: "Manzana", radio: 48, puntos: 21, imgKey: "manzana" },//idx 5
-  { nombre: "Aguacate", radio: 58, puntos: 28, imgKey: "aguacate" },//idx 6
+  { nombre: "Aguacate", radio: 56, puntos: 28, imgKey: "aguacate" },//idx 6
   { nombre: "Mango", radio: 65, puntos: 36, imgKey: "mango"},//idx 7
-  { nombre: "Maíz", radio: 78, puntos: 45, imgKey: "maiz"},//idx 8
-  { nombre: "Piña", radio: 88, puntos: 55, imgKey: "pina" },//idx 9
-  { nombre: "Sandía", radio: 100, puntos: 66, imgKey: "sandia" }//idx 10
+  { nombre: "Maíz", radio: 76, puntos: 45, imgKey: "maiz"},//idx 8
+  { nombre: "Piña", radio: 86, puntos: 55, imgKey: "pina" },//idx 9
+  { nombre: "Sandía", radio: 96, puntos: 66, imgKey: "sandia" }//idx 10
 ];
 
 function preload() {
@@ -55,7 +55,7 @@ function preload() {
     fresa: loadImage('Resources/img/fresa.png'),
     cereza: loadImage('Resources/img/cereza.png'),
     limon: loadImage('Resources/img/limon.png'),
-    tomate: loadImage('Resources/img/tomate.png'),
+    durazno: loadImage('Resources/img/durazno.png'),
     manzana: loadImage('Resources/img/manzana.png'),
     aguacate: loadImage('Resources/img/aguacate.png'),
     mango: loadImage('Resources/img/mango.png'),

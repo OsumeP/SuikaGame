@@ -82,21 +82,40 @@ function dibujarCaja(){
 
 }
 
-function dibujarFondoCaja() {
-  push();  
-  stroke(230, 185, 110);    
-  strokeWeight(10);         
-  strokeJoin(ROUND);        
-  let desvX = 50; 
-  let desvY = 30;
-  line(CAJA.x + desvX, CAJA.y - desvY, 590, CAJA.y - desvY); // fondo  
-  line(CAJA.x + CAJA.grosor / 2, CAJA.y, CAJA.x + desvX, CAJA.y - desvY); // Esquina Superior Izquierda
-  line(590, CAJA.y - desvY, CAJA.x + CAJA.ancho- CAJA.grosor/2, CAJA.y); // Esquina Superior Derecha
-  noStroke(); 
-  fill(215, 180, 130, 60); // El color café del fondo con buena opacidad
-  rect(CAJA.x + desvX, CAJA.y - desvY, 289, CAJA.alto - desvY);
-  pop();
+function dibujarFondoCaja() { 
+  push();   
+  stroke(230, 185, 110);     
+  strokeWeight(10);          
+  strokeJoin(ROUND);         
+  
+  let desvX = 50;  
+  let desvY = 30; 
+  
+  // Calculamos dinámicamente el límite derecho del fondo visual
+  let fondoDerecha = CAJA.x + CAJA.ancho - desvX;
+  
+  // 1. Línea horizontal del fondo superior trasero
+  line(CAJA.x + desvX, CAJA.y - desvY, fondoDerecha, CAJA.y - desvY); 
+  
+  // 2. Esquina Superior Izquierda (conecta el frente con el fondo)
+  line(CAJA.x + CAJA.grosor / 2, CAJA.y, CAJA.x + desvX, CAJA.y - desvY); 
+  
+  // 3. Esquina Superior Derecha (conecta el frente con el fondo)
+  line(fondoDerecha, CAJA.y - desvY, CAJA.x + CAJA.ancho - CAJA.grosor / 2, CAJA.y); 
+  
+  // 4. Rectángulo translúcido que rellena la pared del fondo
+  noStroke();  
+  fill(215, 180, 130, 60); 
+  
+  // El ancho dinámico del rectángulo es: ancho total menos los dos desvíos laterales (50 de cada lado)
+  let anchoFondoRestado = CAJA.ancho - (desvX * 2);
+  rect(CAJA.x + desvX, CAJA.y - desvY, anchoFondoRestado, CAJA.alto - desvY); 
+  
+  pop(); 
 }
+
+
+
 function dibujarFilaEvolucion() {
   fill(227,227,149);
   stroke(255);
@@ -133,7 +152,7 @@ function instanciarFruta(idx, x, y, esFisica) {
     case 1: return new Fresa(x, y, esFisica);
     case 2: return new Cereza(x, y, esFisica);
     case 3: return new Limon(x, y, esFisica);
-    case 4: return new Tomate(x, y, esFisica);
+    case 4: return new Durazno(x, y, esFisica);
     case 5: return new Manzana(x, y, esFisica);
     case 6: return new Aguacate(x, y, esFisica);
     case 7: return new Mango(x, y, esFisica);

@@ -76,7 +76,7 @@ class Cereza extends Fruta {
   }
 }
 class Limon extends Fruta { constructor(x, y, f) { super(x, y, 3, f); } }
-class Tomate extends Fruta { constructor(x, y, f) { super(x, y, 4, f); } }
+class Durazno extends Fruta { constructor(x, y, f) { super(x, y, 4, f); } }
 class Manzana extends Fruta { constructor(x, y, f) { super(x, y, 5, f); } }
 class Aguacate extends Fruta { constructor(x, y, f) { super(x, y, 6, f); } }
 class Mango extends Fruta { constructor(x, y, f) { super(x, y, 7, f); } }
